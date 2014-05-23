@@ -1,0 +1,53 @@
+#!/bin/bash
+
+ROOT="`cd $(dirname $0) && pwd`/.."
+USAGE='usage: serve -d {document_root} -p {http_port}'
+HTTP_CNF=${ROOT}/config/httpd.conf
+HTTP_LOG=${ROOT}/log/apache.log
+HTTP_PID=${ROOT}/log/apache.pid
+HTTP_LCK=${ROOT}/log/apache.lock
+
+if [ $1 == 'stop' ]; then
+    if [[ -f ${HTTP_PID} ]]; then
+        echo "stopping httpd"
+        cat ${HTTP_PID} | xargs kill -TERM
+    else
+        echo "serve: http not running"
+        echo "       no httpd pid file (${HTTP_PID})"
+    fi
+    exit
+fi
+
+set -- $(getopt d:p: "$@")
+
+if [ $? != 0 ]
+then
+   echo "${USAGE}"
+   exit 2
+fi
+
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        (-p) HTTP_PRT=$2; shift;;
+        (-d) HTTP_DOC=$2; shift;;
+        (--) shift; break;;
+    esac
+    shift
+done
+
+HTTP_DOC="`cd ${HTTP_DOC} && pwd`"
+echo "Starting apache at '${HTTP_DOC}' on port ${HTTP_PRT}"
+
+if [[ -f ${HTTP_LOG} ]]; then
+    rm ${HTTP_LOG}
+fi
+
+/usr/sbin/httpd \
+    -f ${HTTP_CNF} \
+    -k restart  \
+    -C "DocumentRoot ${HTTP_DOC}" \
+    -C "ErrorLog     ${HTTP_LOG}" \
+    -C "PidFile      ${HTTP_PID}" \
+    -C "LockFile     ${HTTP_LCK}" \
+    -C "Listen       ${HTTP_PRT}"
