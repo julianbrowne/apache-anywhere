@@ -1,5 +1,7 @@
 #!/bin/bash
 
+APACHE=/usr/sbin/httpd
+
 ROOT="`cd $(dirname $0) && pwd`/.."
 USAGE='usage: serve -d {document_root} -p {http_port}'
 HTTP_CNF=${ROOT}/config/httpd.conf
@@ -43,7 +45,7 @@ if [[ -f ${HTTP_LOG} ]]; then
     rm ${HTTP_LOG}
 fi
 
-/usr/sbin/httpd \
+${APACHE} \
     -f ${HTTP_CNF} \
     -k restart  \
     -C "DocumentRoot ${HTTP_DOC}" \
