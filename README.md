@@ -4,12 +4,12 @@ Command line util to start ad-hoc apache server in chosen directory on chosen po
 
 ### Installation
 
--   Apache must already be installed.   
-    Edit the **bin/serve** script if it's not at **/usr/sbin/httpd**
-
 -   Clone this repository to your local machine:
 
     ```git clone https://github.com/julianbrowne/apache-anywhere.git```
+
+-   Apache must already be installed.   
+    Edit the **bin/serve** script if the apache binary is not at **/usr/sbin/httpd**
 
 -   Edit config file **config/httpd.conf** if required (contains a minimum set of functionality)
 
