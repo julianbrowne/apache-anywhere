@@ -21,13 +21,14 @@ Command line util to start ad-hoc apache server in chosen directory on chosen po
 	document_root: must be a directory containing your html files   
 	port: port to access apache from
 
--   Make sure the serve script is on the PATH and run the serve command as needed.   
-    This will run apache in the current directory on port 8123, meaning you can browse at http://127.0.0.1:8123/
+-   Make sure the serve script is on the PATH and run the serve command as needed
+
+-   For example, this will set the document root of apache to the current directory and expose it via port 8123, meaning you can point your browser at http://127.0.0.1:8123/
 
     ```serve -d . -p 8123```
 
--   Log files etc will appear in the log directory
+-   Log files etc will appear in the log directory where you installed these scripts
 
--   When done, stop the server
+-   When done, stop the httpd process:
 
     ```serve stop```
