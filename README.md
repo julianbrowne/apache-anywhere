@@ -5,6 +5,7 @@ Command line util to start ad-hoc apache server in chosen directory on chosen po
 ### Installation
 
 -   Clone this repository to your local machine:
+
     ```git clone https://github.com/julianbrowne/apache-anywhere.git```
 
 -   Apache must already be installed
