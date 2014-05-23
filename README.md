@@ -18,8 +18,8 @@ Command line util to start ad-hoc apache server in chosen directory on chosen po
 
 	serve -d document_root -p port
 
-	document_root: must be a directory containing your html files   
-	port: port to access apache from
+**document_root**: must be a directory containing your html files   
+**port**: port to access apache from, ideally above 8000 unless you have permissions
 
 -   Make sure the serve script is on the PATH and run the serve command as needed
 
