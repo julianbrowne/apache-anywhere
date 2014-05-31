@@ -1,15 +1,16 @@
 #!/bin/bash
 
 APACHE=/usr/sbin/httpd
+HTTP_PORT_DEFAULT=8686
 
 ROOT="`cd $(dirname $0) && pwd`/.."
-USAGE='usage: serve -d {document_root} -p {http_port}'
+USAGE=$'usage:\n\tserve -d {document_root} -p {http_port}\n\tserve stop\n'
 HTTP_CNF=${ROOT}/config/httpd.conf
 HTTP_LOG=${ROOT}/log/apache.log
 HTTP_PID=${ROOT}/log/apache.pid
 HTTP_LCK=${ROOT}/log/apache.lock
 
-if [ $1 == 'stop' ]; then
+if [ "${1}" == "stop" ]; then
     if [[ -f ${HTTP_PID} ]]; then
         echo "stopping httpd"
         cat ${HTTP_PID} | xargs kill -TERM
@@ -20,13 +21,15 @@ if [ $1 == 'stop' ]; then
     exit
 fi
 
-set -- $(getopt d:p: "$@")
+ARGS=$(getopt d:p: "$@")
 
 if [ $? != 0 ]
 then
    echo "${USAGE}"
    exit 2
 fi
+
+set -- "$ARGS"
 
 while [ $# -gt 0 ]
 do
@@ -37,6 +40,16 @@ do
     esac
     shift
 done
+
+if [ "${HTTP_DOC}" == "" ]
+then
+    HTTP_DOC="`pwd`"
+fi
+
+if [ "${HTTP_PRT}" == "" ]
+then
+    HTTP_PRT=$HTTP_PORT_DEFAULT
+fi
 
 HTTP_DOC="`cd ${HTTP_DOC} && pwd`"
 echo "Starting apache at '${HTTP_DOC}' on port ${HTTP_PRT}"
