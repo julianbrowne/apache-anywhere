@@ -1,0 +1,120 @@
+#!/bin/bash
+
+APACHE=/usr/sbin/httpd
+HTTP_PORT_DEFAULT=8686
+
+ROOT="`cd $(dirname $0) && pwd`/.."
+HTTP_CNF=${ROOT}/config/httpd.conf
+TEMP_LOG=/tmp/apache-anywhere/$$
+apache="$(tput setaf 5)apache :$(tput sgr0)"
+
+usage() {
+    echo 'usage:'
+    echo '  apache [ -d {document_root} ] [ -p {http_port} ]'
+    echo '  apache stop {port}'
+    echo
+}
+
+kill() { 
+    port=$1
+    log "stopping processes running on port ${port}"
+    lsof -i tcp:${port} | awk 'NR!=1 {print $2}' | xargs kill
+    exit
+}
+
+log() { 
+    echo -e "${apache} ${1}"
+}
+
+error() { 
+    echo -e "${apache} $(tput bold)$(tput setaf 1)error - ${1}$(tput sgr0)"
+}
+
+clean() { 
+    typeset directory
+    directory="/tmp/apache-anywhere/${1}"
+    if [ -d ${directory} ]
+    then
+        log "cleaning ${directory}"
+        rm -r ${directory}
+    else
+        error "no such directory ${directory}"
+    fi
+    exit
+}
+
+check_port() { 
+    typeset return_code
+    eval lsof -i tcp:${1}
+    return_code=$?
+    if [ ${return_code} == 0 ]
+    then
+        error "something is already running on port ${1}"
+        log "stop process with 'apache stop ${1}'"
+        exit 1
+    fi
+}
+
+function setup_log { 
+    mkdir -p ${TEMP_LOG}
+    http_log=${TEMP_LOG}/apache.log
+    http_acc="${TEMP_LOG}/access.log common"
+    http_pid=${TEMP_LOG}/apache.pid
+    http_lck=${TEMP_LOG}/apache.lock
+}
+
+getargs() { 
+
+    while getopts ":d:p:" o; do
+        case "${o}" in
+            d)
+                http_doc=${OPTARG}
+                ;;
+            p)
+                http_prt=${OPTARG}
+                ;;
+            h|help)
+                usage
+                exit
+                ;;
+            *)
+                usage
+                exit
+                ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    if [ -z "${http_doc}" ]; then http_doc="`pwd`"; fi
+    if [ -z "${http_prt}" ]; then http_prt=${HTTP_PORT_DEFAULT}; fi
+
+}
+
+if [ "${1}" == "stop" ];  then kill  ${2}; fi
+if [ "${1}" == "clean" ]; then clean ${2}; fi
+
+getargs $*
+check_port ${http_prt}
+setup_log
+
+log "starting apache at '${http_doc}' on port ${http_prt}"
+log "temp files: ${TEMP_LOG}"
+log "open browser at http://127.0.0.1:${http_prt}/"
+
+${APACHE} \
+    -f ${HTTP_CNF} \
+    -k start  \
+    -C "DocumentRoot ${http_doc}" \
+    -C "ErrorLog     ${http_log}" \
+    -C "LogFormat    '%h %l %u %t \"%r\" %>s %b' common" \
+    -C "CustomLog    ${http_acc}" \
+    -C "PidFile      ${http_pid}" \
+    -C "LockFile     ${http_lck}" \
+    -C "Listen       ${http_prt}"
+
+if [ $? != 0 ]
+then
+    error "problem starting server - $?"
+    cat ${http_log}
+    clean $$
+fi

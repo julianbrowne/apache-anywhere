@@ -1,34 +1,48 @@
-## apache-anywhere
+# apache-anywhere
 
-Command line util to start ad-hoc apache server in chosen directory on chosen port
+There are a raft of "run a web site from here" commands that spawn an HTTP server from the command line.
+The problem is the web servers they spawn don't always represent the actuall web server you might use
+in production, so they don't support, for example, ``.htaccess`` files.
 
-### Installation
+Cue apache-anywhere, which start a fully functional apache server wherever you want on whatever port you want, as many times as you want. Got a directory full of html, javascript and css files with cgi scripts and htacces controls? Just fire up apache-anywhere.
+
+It's like Apache, but Anywhere.
+
+## Dependencies
+
+-   Apache
+-   A bash shell to run commands in
+
+## Installation
 
 -   Clone this repository to your local machine:
 
-    ```git clone https://github.com/julianbrowne/apache-anywhere.git```
+    ```
+	git clone https://github.com/julianbrowne/apache-anywhere.git
+    ```
 
 -   Apache must already be installed
 
--   Edit the **bin/serve** script if the apache binary is not at **/usr/sbin/httpd**
+-   Edit the ``bin/apache`` script (only if the apache binary is **not** at ``/usr/sbin/httpd``)
 
 -   Edit config file **config/httpd.conf** if required (contains a minimum set of functionality)
 
-### Usage
+## Usage
 
-	serve -d document_root -p port
+With ``apache-anywhere/bin`` on the path
 
-**document_root**: must be a directory containing your html files   
-**port**: port to access apache from, ideally above 8000 unless you have permissions
+	apache                              // starts apache httpd in the current directory at port 8686
 
--   Make sure the serve script is on the PATH and run the serve command as needed
+    apache -p 8123                      // at current directory on port 8123
 
--   For example, this will set the document root of apache to the current directory and expose it via port 8123, meaning you can point your browser at http://127.0.0.1:8123/
+    apache -d /tmp                      // sets root docs directory to /tmp
 
-    ```serve -d . -p 8123```
+    apache -d /home/user42 -p 8456      // you get the idea
 
--   Log files etc will appear in the log directory where you installed these scripts
+If you're running apache as a regular user then the port number needs to be above 8000 as below that ports
+are reserved for system processes. Whichever user you are logged in as should also have access to the files
+in the documents directory.
 
--   When done, stop the httpd process:
+    apache stop 8123                    // stops the apache http process running on port 8123
 
-    ```serve stop```
+Apache log and tmp files are created at ``/tmp/{process_id}/``
