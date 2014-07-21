@@ -1,10 +1,10 @@
 # apache-anywhere
 
 There are a raft of "run a web site from here" commands that spawn an HTTP server from the command line.
-The problem is the web servers they spawn don't always represent the actuall web server you might use
+The problem is the web servers they spawn don't always represent the actual web server you might use
 in production, so they don't support, for example, ``.htaccess`` files.
 
-Cue apache-anywhere, which start a fully functional apache server wherever you want on whatever port you want, as many times as you want. Got a directory full of html, javascript and css files with cgi scripts and htacces controls? Just fire up apache-anywhere.
+Cue apache-anywhere, which start a fully functional Apache server wherever you want on whatever port you want, as many times as you want. Got a directory full of html, javascript and css files with cgi scripts and htacces controls? Just fire up apache-anywhere.
 
 It's like Apache, but Anywhere.
 
