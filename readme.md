@@ -40,9 +40,11 @@ With ``apache-anywhere/bin`` on the path
     apache -d /home/user42 -p 8456      // you get the idea
 
 If you're running apache as a regular user then the port number needs to be above 8000 as below that ports
-are reserved for system processes. Whichever user you are logged in as should also have access to the files
-in the documents directory.
+are reserved for system processes. Also ensure that whichever user you are logged in as has appropriate access to the files in the documents directory.
 
     apache stop 8123                    // stops the apache http process running on port 8123
 
 Apache log and tmp files are created at ``/tmp/{process_id}/``
+
+    apache clean 8123                   // cleans up all temp files created by process on 8123
+

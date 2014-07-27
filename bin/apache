@@ -12,6 +12,7 @@ usage() {
     echo 'usage:'
     echo '  apache [ -d {document_root} ] [ -p {http_port} ]'
     echo '  apache stop {port}'
+    echo '  apache clean {port}'
     echo
 }
 
@@ -90,8 +91,17 @@ getargs() {
 
 }
 
-if [ "${1}" == "stop" ];  then kill  ${2}; fi
-if [ "${1}" == "clean" ]; then clean ${2}; fi
+if [ "${1}" == "stop" ]
+then
+    if [ "${2}" == "" ]; then usage; exit; fi
+    kill  ${2}
+fi
+
+if [ "${1}" == "clean" ]
+then
+    if [ "${2}" == "" ]; then usage; exit; fi
+    clean ${2}
+fi
 
 getargs $*
 check_port ${http_prt}
