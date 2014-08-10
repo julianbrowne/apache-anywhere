@@ -64,6 +64,10 @@ function setup_log {
     http_lck=${TEMP_LOG}/apache.lock
 }
 
+exists() { 
+    hash "$1" &> /dev/null ;
+}
+
 getargs() { 
 
     while getopts ":d:p:" o; do
@@ -91,17 +95,25 @@ getargs() {
 
 }
 
-if [ "${1}" == "stop" ]
-then
-    if [ "${2}" == "" ]; then usage; exit; fi
-    kill  ${2}
-fi
-
-if [ "${1}" == "clean" ]
-then
-    if [ "${2}" == "" ]; then usage; exit; fi
-    clean ${2}
-fi
+case "${1}" in
+    "stop")
+        if [ "${2}" == "" ]; then usage; exit; fi
+        kill  ${2}
+        exit
+        ;;
+    "clean")
+        if [ "${2}" == "" ]; then usage; exit; fi
+        clean ${2}
+        exit
+        ;;
+    "stats")
+        if exists apachectl;  then cmd=apachectl;  fi
+        if exists apache2ctl; then cmd=apache2ctl; fi
+        if [ "${cmd}" == "" ]; then echo "couldn't find apachectl command"; exit; fi
+        ${cmd} -S
+        exit
+        ;;
+esac
 
 getargs $*
 check_port ${http_prt}

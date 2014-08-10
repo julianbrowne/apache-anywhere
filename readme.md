@@ -4,14 +4,17 @@ There are a raft of "run a web site from here" commands that spawn an HTTP serve
 The problem is the web servers they spawn don't always represent the actual web server you might use
 in production, so they don't support, for example, ``.htaccess`` files.
 
-Cue apache-anywhere, which start a fully functional Apache server wherever you want on whatever port you want, as many times as you want. Got a directory full of html, javascript and css files with cgi scripts and htacces controls? Just fire up apache-anywhere.
+Cue apache-anywhere, which starts a fully functional Apache server wherever you want, on whatever port you want, as many times as you want.
+
+Got a directory full of html, javascript and css files with cgi scripts and htacces controls? Just fire up apache-anywhere.
 
 It's like Apache, but Anywhere.
 
 ## Dependencies
 
--   Apache
--   A bash shell to run commands in
+-   Written and tested on a Mac (could be updated for any *nix)
+-   Apache 2
+-   A bash shell
 
 ## Installation
 
@@ -29,7 +32,7 @@ It's like Apache, but Anywhere.
 
 ## Usage
 
-With ``apache-anywhere/bin`` on the path
+With ``apache-anywhere/bin`` somwhere on the path:
 
 	apache                              // starts apache httpd in the current directory at port 8686
 
@@ -47,4 +50,7 @@ are reserved for system processes. Also ensure that whichever user you are logge
 Apache log and tmp files are created at ``/tmp/{process_id}/``
 
     apache clean 8123                   // cleans up all temp files created by process on 8123
+
+    apache stats                        // provides stats about the permanent apache config in etc
+                                        // useful to check what's already running on what port
 
