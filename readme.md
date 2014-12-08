@@ -13,7 +13,7 @@ It's like Apache, but Anywhere.
 ## Dependencies
 
 -   Written and tested on a Mac (could be updated for any *nix)
--   Apache 2
+-   Apache 2.4
 -   A bash shell
 
 ## Installation

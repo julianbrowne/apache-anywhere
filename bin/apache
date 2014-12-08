@@ -61,7 +61,7 @@ function setup_log {
     http_log=${TEMP_LOG}/apache.log
     http_acc="${TEMP_LOG}/access.log common"
     http_pid=${TEMP_LOG}/apache.pid
-    http_lck=${TEMP_LOG}/apache.lock
+    http_lck=${TEMP_LOG}
 }
 
 exists() { 
@@ -131,7 +131,7 @@ ${APACHE} \
     -C "LogFormat    '%h %l %u %t \"%r\" %>s %b' common" \
     -C "CustomLog    ${http_acc}" \
     -C "PidFile      ${http_pid}" \
-    -C "LockFile     ${http_lck}" \
+    -C "Mutex        file:${http_lck} default" \
     -C "Listen       ${http_prt}"
 
 if [ $? != 0 ]
