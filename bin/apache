@@ -126,7 +126,7 @@ log "open browser at http://127.0.0.1:${http_prt}/"
 ${APACHE} \
     -f ${HTTP_CNF} \
     -k start  \
-    -C "DocumentRoot ${http_doc}" \
+    -C "DocumentRoot '${http_doc}'" \
     -C "ErrorLog     ${http_log}" \
     -C "LogFormat    '%h %l %u %t \"%r\" %>s %b' common" \
     -C "CustomLog    ${http_acc}" \
