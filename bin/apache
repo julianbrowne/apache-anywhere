@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 APACHE=/usr/sbin/httpd
 HTTP_PORT_DEFAULT=8686
