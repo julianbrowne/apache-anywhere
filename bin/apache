@@ -1,9 +1,10 @@
 #!/bin/bash
 
-APACHE=/usr/sbin/httpd
-HTTP_PORT_DEFAULT=8686
-
 ROOT="`cd $(dirname $0) && pwd`/.."
+
+APACHE_ANYWHERE_ROOT=${ROOT}; export APACHE_ANYWHERE_ROOT
+APACHE_BINARY=${ROOT}/bin/httpd #/usr/sbin/httpd
+HTTP_PORT_DEFAULT=8686
 HTTP_CNF=${ROOT}/config/httpd.conf
 TEMP_LOG=/tmp/apache-anywhere/$$
 apache="$(tput setaf 5)apache :$(tput sgr0)"
@@ -123,7 +124,7 @@ log "starting apache at '${http_doc}' on port ${http_prt}"
 log "temp files: ${TEMP_LOG}"
 log "open browser at http://127.0.0.1:${http_prt}/"
 
-${APACHE} \
+${APACHE_BINARY} \
     -f ${HTTP_CNF} \
     -k start  \
     -C "DocumentRoot '${http_doc}'" \
@@ -140,3 +141,5 @@ then
     cat ${http_log}
     clean $$
 fi
+
+tail -f ${http_log}
