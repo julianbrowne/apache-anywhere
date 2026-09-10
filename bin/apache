@@ -3,11 +3,19 @@
 ROOT="`cd $(dirname $0) && pwd`/.."
 
 APACHE_ANYWHERE_ROOT=${ROOT}; export APACHE_ANYWHERE_ROOT
-APACHE_BINARY=${ROOT}/bin/httpd #/usr/sbin/httpd
 HTTP_PORT_DEFAULT=8686
 HTTP_CNF=${ROOT}/config/httpd.conf
 TEMP_LOG=/tmp/apache-anywhere/$$
 apache="$(tput setaf 5)apache :$(tput sgr0)"
+
+# candidate (binary, modules directory) pairs for the usual places
+# apache httpd turns up on a mac, checked in this order
+APACHE_CANDIDATES="
+/opt/homebrew/bin/httpd:/opt/homebrew/opt/httpd/lib/httpd/modules
+/usr/local/opt/httpd/bin/httpd:/usr/local/opt/httpd/lib/httpd/modules
+/opt/local/apache2/bin/httpd:/opt/local/apache2/modules
+/usr/sbin/httpd:/usr/libexec/apache2
+"
 
 usage() {
     echo 'usage:'
@@ -65,8 +73,28 @@ function setup_log {
     http_lck=${TEMP_LOG}
 }
 
-exists() { 
+exists() {
     hash "$1" &> /dev/null ;
+}
+
+find_apache() {
+    typeset candidate binary modules
+
+    for candidate in ${APACHE_CANDIDATES}; do
+        binary="${candidate%%:*}"
+        modules="${candidate#*:}"
+        if [ -x "${binary}" ] && [ -d "${modules}" ]; then
+            APACHE_BINARY=${binary}
+            APACHE_HTTPD_MODULES=${modules}
+            export APACHE_HTTPD_MODULES
+            return
+        fi
+    done
+
+    error "couldn't find an installed apache httpd binary"
+    log "checked the usual mac locations (homebrew, macports, built-in system apache)"
+    log "install apache httpd, e.g. 'brew install httpd', and try again"
+    exit 1
 }
 
 getargs() { 
@@ -116,6 +144,7 @@ case "${1}" in
         ;;
 esac
 
+find_apache
 getargs $*
 check_port ${http_prt}
 setup_log

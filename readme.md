@@ -15,12 +15,14 @@ It's like Apache, but Anywhere.
 
 ## Dependencies
 
-None. Comes with the binary and most of the common modules and it's easy to add your own.
+Apache httpd must be installed already. `bin/apache` looks for it in the usual
+mac locations - Homebrew (Apple Silicon and Intel), MacPorts, and macOS's
+built-in system Apache - and uses whichever it finds first. If none of those
+have it installed, install one, e.g. `brew install httpd`.
 
 ## Installation
 
 * Clone this repository to your local machine: `git clone https://github.com/julianbrowne/apache-anywhere.git`  
-* Add any modules into `modules` or replace the `httpd` binary in `bin` if you need to  
 * Edit the config file `httpd.conf` if required  
 * Add the `apache-anywhere/bin` to your path  
 
